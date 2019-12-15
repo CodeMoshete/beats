@@ -1,8 +1,12 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class Engine : MonoBehaviour
 {
-    private const float AMPLITUDE = 1f;
+    private const int NUM_BARS = 16;
+    private const int NUM_SAMPLES = 1024;
+    private const float AMPLITUDE = 100f;
+    private const float POS_OFFSET = 1.5f;
 
     public AudioSource Audio;
     public Transform VisScaler;
@@ -14,6 +18,8 @@ public class Engine : MonoBehaviour
     private int frequency;
     private float[] clipData;
 
+    private List<Transform> bars;
+
     public void Start()
     {
         clip = Audio.clip;
@@ -21,6 +27,15 @@ public class Engine : MonoBehaviour
         frequency = clip.frequency;
         clipDuration = (float)((float)(clipData.Length / frequency) / clip.channels);
         clip.GetData(clipData, 0);
+
+        bars = new List<Transform>();
+        for (int i = 0; i < NUM_BARS; ++i)
+        {
+            GameObject bar = GameObject.Instantiate(VisScaler.gameObject);
+            bar.transform.Translate(new Vector3(POS_OFFSET * (i + 1), 0f, 0f));
+            bars.Add(bar.transform);
+        }
+        VisScaler.gameObject.SetActive(false);
     }
 
     public void Update()
@@ -36,17 +51,30 @@ public class Engine : MonoBehaviour
 
         //prevSampleIndex += numSamplesThisFrame;
 
-        float[] curSpectrum = new float[1024];
+        float[] curSpectrum = new float[NUM_SAMPLES];
         Audio.GetSpectrumData(curSpectrum, 0, FFTWindow.BlackmanHarris);
 
-        float targetFrequency = 234f;
-        float hertzPerBin = (float)AudioSettings.outputSampleRate / 2f / 1024;
-        int targetIndex = Mathf.RoundToInt(targetFrequency / hertzPerBin);
-
-        string outString = "";
-        for (int i = targetIndex - 3; i <= targetIndex + 3; i++)
+        int samplesPerBar = (NUM_SAMPLES / NUM_BARS) / 16;
+        for (int i = 0; i < NUM_BARS; ++i)
         {
-            outString += string.Format("| Bin {0} : {1}Hz : {2} |   ", i, i * hertzPerBin, curSpectrum[i]);
+            float avgVal = 0f;
+            for (int j = 0; j < samplesPerBar; ++j)
+            {
+                int currentIndex = (i * samplesPerBar) + j;
+                avgVal += curSpectrum[currentIndex];
+            }
+            avgVal /= samplesPerBar;
+            bars[i].localScale = new Vector3(1f, avgVal * AMPLITUDE, 1f);
         }
-    }
+
+            //float targetFrequency = 234f;
+            //float hertzPerBin = (float)AudioSettings.outputSampleRate / 2f / 1024;
+            //int targetIndex = Mathf.RoundToInt(targetFrequency / hertzPerBin);
+
+            //string outString = "";
+            //for (int i = targetIndex - 3; i <= targetIndex + 3; i++)
+            //{
+            //    outString += string.Format("| Bin {0} : {1}Hz : {2} |   ", i, i * hertzPerBin, curSpectrum[i]);
+            //}
+        }
 }
