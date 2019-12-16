@@ -3,13 +3,17 @@ using UnityEngine;
 
 public class Engine : MonoBehaviour
 {
-    private const int NUM_BARS = 16;
+    private const float RADIUS = 15f;
+    private const int NUM_BARS = 64;
     private const int NUM_SAMPLES = 1024;
     private const float AMPLITUDE = 100f;
+    private const float MAX_AMPLITUDE = 3.5f;
     private const float POS_OFFSET = 1.5f;
 
+    public float RotationRate;
     public AudioSource Audio;
     public Transform VisScaler;
+    public Transform Rotater;
 
     private AudioClip clip;
     private float clipDuration;
@@ -18,7 +22,7 @@ public class Engine : MonoBehaviour
     private int frequency;
     private float[] clipData;
 
-    private List<Transform> bars;
+    private List<IVisualizer> visualizers;
 
     public void Start()
     {
@@ -28,29 +32,23 @@ public class Engine : MonoBehaviour
         clipDuration = (float)((float)(clipData.Length / frequency) / clip.channels);
         clip.GetData(clipData, 0);
 
-        bars = new List<Transform>();
+        visualizers = new List<IVisualizer>();
+        float stepAmt = (2f * Mathf.PI) / NUM_BARS;
         for (int i = 0; i < NUM_BARS; ++i)
         {
             GameObject bar = GameObject.Instantiate(VisScaler.gameObject);
-            bar.transform.Translate(new Vector3(POS_OFFSET * (i + 1), 0f, 0f));
-            bars.Add(bar.transform);
+            float posX = Mathf.Sin(stepAmt * i) * RADIUS;
+            float posZ = Mathf.Cos(stepAmt * i) * RADIUS;
+            Vector3 pos = new Vector3(posX, 0f, posZ);
+            bar.transform.position = pos;
+            bar.transform.LookAt(Vector3.zero);
+            visualizers.Add(bar.GetComponent<IVisualizer>());
         }
         VisScaler.gameObject.SetActive(false);
     }
 
     public void Update()
     {
-        //int numSamplesThisFrame = Mathf.Min(clipData.Length - prevSampleIndex, Mathf.RoundToInt(Time.deltaTime * frequency) * 2);
-        //float avgSample = 0f;
-        //for (int i = prevSampleIndex, end = prevSampleIndex + numSamplesThisFrame; i < end; ++i)
-        //{
-        //    avgSample += (clipData[i] + 1f) / 2f;
-        //}
-        //avgSample /= Mathf.Max(numSamplesThisFrame, 1);
-        //VisScaler.localScale = new Vector3(1f, avgSample * AMPLITUDE, 1f);
-
-        //prevSampleIndex += numSamplesThisFrame;
-
         float[] curSpectrum = new float[NUM_SAMPLES];
         Audio.GetSpectrumData(curSpectrum, 0, FFTWindow.BlackmanHarris);
 
@@ -64,17 +62,10 @@ public class Engine : MonoBehaviour
                 avgVal += curSpectrum[currentIndex];
             }
             avgVal /= samplesPerBar;
-            bars[i].localScale = new Vector3(1f, avgVal * AMPLITUDE, 1f);
+            float scale = Mathf.Min(MAX_AMPLITUDE, avgVal * AMPLITUDE);
+            visualizers[i].VisualizeValue(scale);
         }
 
-            //float targetFrequency = 234f;
-            //float hertzPerBin = (float)AudioSettings.outputSampleRate / 2f / 1024;
-            //int targetIndex = Mathf.RoundToInt(targetFrequency / hertzPerBin);
-
-            //string outString = "";
-            //for (int i = targetIndex - 3; i <= targetIndex + 3; i++)
-            //{
-            //    outString += string.Format("| Bin {0} : {1}Hz : {2} |   ", i, i * hertzPerBin, curSpectrum[i]);
-            //}
-        }
+        Rotater.Rotate(new Vector3(0f, RotationRate * Time.deltaTime, 0f));
+    }
 }
