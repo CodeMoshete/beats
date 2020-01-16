@@ -13,6 +13,7 @@ public class Engine : MonoBehaviour
     public float RotationRate;
     public AudioSource Audio;
     public Transform VisScaler;
+    public Transform VisEmitter;
     public Transform Rotater;
 
     private AudioClip clip;
