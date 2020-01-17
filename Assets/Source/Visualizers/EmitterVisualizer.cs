@@ -6,6 +6,7 @@ public class EmitterVisualizer : MonoBehaviour, IVisualizer
 
     public ParticleSystem Particles;
 
+    private float baseSpeed;
     private float setScalar;
     private Vector3 startPos;
     private Vector3 startPosNormal;
@@ -14,6 +15,7 @@ public class EmitterVisualizer : MonoBehaviour, IVisualizer
     {
         startPos = transform.localPosition;
         startPosNormal = startPos.normalized;
+        baseSpeed = Particles.main.startSpeedMultiplier;
     }
 
     private void Update()
@@ -27,9 +29,10 @@ public class EmitterVisualizer : MonoBehaviour, IVisualizer
     public void VisualizeValue(float value)
     {
         setScalar = Mathf.Max(setScalar, value);
-        transform.localPosition = startPos + ((setScalar * 30f) * startPosNormal);
-        Color particleColor = new Color(1f - value, 1f - value, value);
+        transform.localPosition = startPos - ((setScalar * 5f) * startPosNormal);
+        Color particleColor = new Color(value, value, 1f - value);
         ParticleSystem.MainModule mainModule = Particles.main;
         mainModule.startColor = new ParticleSystem.MinMaxGradient(particleColor);
+        mainModule.startSpeedMultiplier = baseSpeed + (value * 100f);
     }
 }

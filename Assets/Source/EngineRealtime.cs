@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EngineRealtime : MonoBehaviour
 {
-    private const float RADIUS = 50f;
+    private const float RADIUS = 90f;
     private const int NUM_BARS = 256;
     private const float AMPLITUDE = 1.25f;
 
