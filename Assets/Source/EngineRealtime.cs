@@ -12,6 +12,7 @@ public class EngineRealtime : MonoBehaviour
     public Transform VisScaler;
     public Transform VisEmitter;
     public Transform Rotater;
+    public Transform VisRotater;
 
     private RealtimeAudio audioSource;
     private List<IVisualizer> visualizers;
@@ -38,7 +39,7 @@ public class EngineRealtime : MonoBehaviour
         float stepAmt = (2f * Mathf.PI) / NUM_BARS;
         for (int i = 0; i < NUM_BARS; ++i)
         {
-            GameObject bar = GameObject.Instantiate(original.gameObject);
+            GameObject bar = GameObject.Instantiate(original.gameObject, VisRotater);
             float posX = Mathf.Sin(stepAmt * i) * RADIUS;
             float posZ = Mathf.Cos(stepAmt * i) * RADIUS;
             Vector3 pos = new Vector3(posX, 0f, posZ);
@@ -51,7 +52,8 @@ public class EngineRealtime : MonoBehaviour
 
     public void Update()
     {
-        Rotater.Rotate(new Vector3(0f, RotationRate * Time.deltaTime, 0f));
+        //Rotater.Rotate(new Vector3(0f, RotationRate * Time.deltaTime, 0f));
+        VisRotater.Rotate(new Vector3(0f, RotationRate * Time.deltaTime, 0f));
         for (int i = 0; i < NUM_BARS; ++i)
         {
             float scale = Mathf.Min(currentSpectrum[i] * AMPLITUDE);
