@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class EngineRealtime : MonoBehaviour
 {
-    private const float RADIUS = 90f;
-    private const int NUM_BARS = 256;
+    public const int NUM_BARS = 256;
+    public const float RADIUS = 90f;
     private const float AMPLITUDE = 1.25f;
 
     public float RotationRate;
@@ -45,7 +45,9 @@ public class EngineRealtime : MonoBehaviour
             Vector3 pos = new Vector3(posX, 0f, posZ);
             bar.transform.position = pos;
             bar.transform.LookAt(Vector3.zero);
-            visualizers.Add(bar.GetComponent<IVisualizer>());
+            IVisualizer visualizer = bar.GetComponent<IVisualizer>();
+            visualizer.Initialize(i);
+            visualizers.Add(visualizer);
         }
         original.gameObject.SetActive(false);
     }

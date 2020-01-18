@@ -5,6 +5,11 @@ public class BarVisualizer : MonoBehaviour, IVisualizer
     private const float SCALE_DOWN_SPEED = 6f;
     private float setScale;
 
+    public void Initialize(int index)
+    {
+        // Intentionally empty.
+    }
+
     private void Update()
     {
         if (setScale > 0)
