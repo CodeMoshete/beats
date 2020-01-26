@@ -1,4 +1,4 @@
-﻿public interface IVisualizer
+﻿public interface IFullSpectrumVisualizer
 {
     void Initialize(int index);
     void VisualizeValue(float value);

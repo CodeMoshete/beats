@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class BarVisualizer : MonoBehaviour, IVisualizer
+public class BarVisualizer : MonoBehaviour, IFullSpectrumVisualizer
 {
     private const float SCALE_DOWN_SPEED = 6f;
     private float setScale;

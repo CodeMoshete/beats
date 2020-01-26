@@ -13,18 +13,27 @@ public class EngineRealtime : MonoBehaviour
     public Transform VisEmitter;
     public Transform Rotater;
     public Transform VisRotater;
+    public List<GameObject> BeatVisualizers;
 
     private RealtimeAudio audioSource;
-    private List<IVisualizer> visualizers;
+    private List<IFullSpectrumVisualizer> fsVisualizers;
+    private List<IAverageSpectrumVisualizer> avgVisualizers;
     private float[] currentSpectrum;
 
     private void Awake()
     {
         currentSpectrum = new float[NUM_BARS];
-        visualizers = new List<IVisualizer>();
+        fsVisualizers = new List<IFullSpectrumVisualizer>();
+        avgVisualizers = new List<IAverageSpectrumVisualizer>();
 
         //GenerateVisCircle(VisScaler);
         GenerateVisCircle(VisEmitter);
+
+        for (int i = 0, count = BeatVisualizers.Count; i < count; ++i)
+        {
+            IAverageSpectrumVisualizer vis = BeatVisualizers[i].GetComponent<IAverageSpectrumVisualizer>();
+            avgVisualizers.Add(vis);
+        }
 
         audioSource = new RealtimeAudio(NUM_BARS, ScalingStrategy.Sqrt, (spectrum) =>
         {
@@ -45,9 +54,9 @@ public class EngineRealtime : MonoBehaviour
             Vector3 pos = new Vector3(posX, 0f, posZ);
             bar.transform.position = pos;
             bar.transform.LookAt(Vector3.zero);
-            IVisualizer visualizer = bar.GetComponent<IVisualizer>();
+            IFullSpectrumVisualizer visualizer = bar.GetComponent<IFullSpectrumVisualizer>();
             visualizer.Initialize(i);
-            visualizers.Add(visualizer);
+            fsVisualizers.Add(visualizer);
         }
         original.gameObject.SetActive(false);
     }
@@ -59,7 +68,12 @@ public class EngineRealtime : MonoBehaviour
         for (int i = 0; i < NUM_BARS; ++i)
         {
             float scale = Mathf.Min(currentSpectrum[i] * AMPLITUDE);
-            visualizers[i].VisualizeValue(scale);
+            fsVisualizers[i].VisualizeValue(scale);
+        }
+
+        for (int i = 0; i < avgVisualizers.Count; ++i)
+        {
+            avgVisualizers[i].VisualizeValue(currentSpectrum);
         }
     }
 

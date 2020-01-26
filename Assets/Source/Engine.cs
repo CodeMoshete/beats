@@ -23,7 +23,8 @@ public class Engine : MonoBehaviour
     private int frequency;
     private float[] clipData;
 
-    private List<IVisualizer> visualizers;
+    private List<IAverageSpectrumVisualizer> avgVisualizers;
+    private List<IFullSpectrumVisualizer> fsVisualizers;
 
     public void Start()
     {
@@ -33,7 +34,9 @@ public class Engine : MonoBehaviour
         clipDuration = (float)((float)(clipData.Length / frequency) / clip.channels);
         clip.GetData(clipData, 0);
 
-        visualizers = new List<IVisualizer>();
+        avgVisualizers = new List<IAverageSpectrumVisualizer>();
+
+        fsVisualizers = new List<IFullSpectrumVisualizer>();
         float stepAmt = (2f * Mathf.PI) / NUM_BARS;
         for (int i = 0; i < NUM_BARS; ++i)
         {
@@ -43,7 +46,7 @@ public class Engine : MonoBehaviour
             Vector3 pos = new Vector3(posX, 0f, posZ);
             bar.transform.position = pos;
             bar.transform.LookAt(Vector3.zero);
-            visualizers.Add(bar.GetComponent<IVisualizer>());
+            fsVisualizers.Add(bar.GetComponent<IFullSpectrumVisualizer>());
         }
         VisScaler.gameObject.SetActive(false);
     }
@@ -64,7 +67,7 @@ public class Engine : MonoBehaviour
             }
             avgVal /= samplesPerBar;
             float scale = Mathf.Min(MAX_AMPLITUDE, avgVal * AMPLITUDE);
-            visualizers[i].VisualizeValue(scale);
+            fsVisualizers[i].VisualizeValue(scale);
         }
 
         Rotater.Rotate(new Vector3(0f, RotationRate * Time.deltaTime, 0f));

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class EmitterVisualizer : MonoBehaviour, IVisualizer
+public class EmitterVisualizer : MonoBehaviour, IFullSpectrumVisualizer
 {
     private const float SCALE_DOWN_SPEED = 6f;
 
