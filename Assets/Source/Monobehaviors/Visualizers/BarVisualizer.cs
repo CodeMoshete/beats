@@ -1,13 +1,18 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 public class BarVisualizer : MonoBehaviour, IFullSpectrumVisualizer
 {
     private const float SCALE_DOWN_SPEED = 6f;
+    public bool DebugMode;
+    public GameObject TextObject;
+    public Text IndexText;
     private float setScale;
 
     public void Initialize(int index)
     {
-        // Intentionally empty.
+        TextObject.SetActive(DebugMode);
+        IndexText.text = index.ToString();
     }
 
     private void Update()

@@ -27,7 +27,7 @@ public class EngineRealtime : MonoBehaviour
         avgVisualizers = new List<IAverageSpectrumVisualizer>();
 
         //GenerateVisCircle(VisScaler);
-        GenerateVisCircle(VisEmitter);
+        GenerateVisCircle(VisEmitter, true);
 
         for (int i = 0, count = BeatVisualizers.Count; i < count; ++i)
         {
@@ -43,12 +43,13 @@ public class EngineRealtime : MonoBehaviour
         audioSource.StartListen();
     }
 
-    private void GenerateVisCircle(Transform original)
+    private void GenerateVisCircle(Transform original, bool rotating = false)
     {
         float stepAmt = (2f * Mathf.PI) / NUM_BARS;
         for (int i = 0; i < NUM_BARS; ++i)
         {
-            GameObject bar = GameObject.Instantiate(original.gameObject, VisRotater);
+            Transform parent = rotating ? VisRotater : null;
+            GameObject bar = GameObject.Instantiate(original.gameObject, parent);
             float posX = Mathf.Sin(stepAmt * i) * RADIUS;
             float posZ = Mathf.Cos(stepAmt * i) * RADIUS;
             Vector3 pos = new Vector3(posX, 0f, posZ);

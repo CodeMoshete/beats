@@ -4,7 +4,7 @@ using UnityEngine;
 public class BeatVisualizer : MonoBehaviour, IAverageSpectrumVisualizer
 {
     private const int STACK_SIZE = 120;
-    private const float PEAK_THRESHOLD = 1.3f;
+    private const float PEAK_THRESHOLD = 1.25f;
 
     public bool DebugMode;
     public Transform Bar;
@@ -29,7 +29,7 @@ public class BeatVisualizer : MonoBehaviour, IAverageSpectrumVisualizer
     public void VisualizeValue(float[] values)
     {
         float average = 0f;
-        int numValues = values.Length;
+        int numValues = 12;// values.Length;
         for (int i = 0; i < numValues; ++i)
         {
             average += values[i];
@@ -57,7 +57,6 @@ public class BeatVisualizer : MonoBehaviour, IAverageSpectrumVisualizer
                 thresholdExceeded += 1;
                 if (average <= avg)
                 {
-                    Debug.Log("Beat");
                     thresholdExceeded = 0;
                     GameObject.Instantiate(BeatObject);
                 }
