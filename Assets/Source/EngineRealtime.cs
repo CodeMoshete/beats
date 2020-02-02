@@ -16,14 +16,14 @@ public class EngineRealtime : MonoBehaviour
     public List<GameObject> BeatVisualizers;
 
     private RealtimeAudio audioSource;
-    private List<IFullSpectrumVisualizer> fsVisualizers;
+    private List<List<IFullSpectrumVisualizer>> fsVisualizers;
     private List<IAverageSpectrumVisualizer> avgVisualizers;
     private float[] currentSpectrum;
 
     private void Awake()
     {
         currentSpectrum = new float[NUM_BARS];
-        fsVisualizers = new List<IFullSpectrumVisualizer>();
+        fsVisualizers = new List<List<IFullSpectrumVisualizer>>();
         avgVisualizers = new List<IAverageSpectrumVisualizer>();
 
         //GenerateVisCircle(VisScaler);
@@ -46,6 +46,7 @@ public class EngineRealtime : MonoBehaviour
     private void GenerateVisCircle(Transform original, bool rotating = false)
     {
         float stepAmt = (2f * Mathf.PI) / NUM_BARS;
+        List<IFullSpectrumVisualizer> visualizerSet = new List<IFullSpectrumVisualizer>();
         for (int i = 0; i < NUM_BARS; ++i)
         {
             Transform parent = rotating ? VisRotater : null;
@@ -57,8 +58,9 @@ public class EngineRealtime : MonoBehaviour
             bar.transform.LookAt(Vector3.zero);
             IFullSpectrumVisualizer visualizer = bar.GetComponent<IFullSpectrumVisualizer>();
             visualizer.Initialize(i);
-            fsVisualizers.Add(visualizer);
+            visualizerSet.Add(visualizer);
         }
+        fsVisualizers.Add(visualizerSet);
         original.gameObject.SetActive(false);
     }
 
@@ -66,15 +68,25 @@ public class EngineRealtime : MonoBehaviour
     {
         //Rotater.Rotate(new Vector3(0f, RotationRate * Time.deltaTime, 0f));
         VisRotater.Rotate(new Vector3(0f, RotationRate * Time.deltaTime, 0f));
+        for (int j = 0, count = fsVisualizers.Count; j < count; ++j)
+        {
+            for (int i = 0; i < NUM_BARS; ++i)
+            {
+                float scale = Mathf.Min(currentSpectrum[i] * AMPLITUDE);
+                fsVisualizers[j][i].VisualizeValue(scale);
+            }
+        }
+
+        float spectrumAverage = 0f;
         for (int i = 0; i < NUM_BARS; ++i)
         {
-            float scale = Mathf.Min(currentSpectrum[i] * AMPLITUDE);
-            fsVisualizers[i].VisualizeValue(scale);
+            spectrumAverage += currentSpectrum[i];
         }
+        spectrumAverage /= (float)NUM_BARS;
 
         for (int i = 0; i < avgVisualizers.Count; ++i)
         {
-            avgVisualizers[i].VisualizeValue(currentSpectrum);
+            avgVisualizers[i].VisualizeValue(currentSpectrum, spectrumAverage);
         }
     }
 

@@ -3,13 +3,17 @@ using UnityEngine;
 
 public class BeatVisualizer : MonoBehaviour, IAverageSpectrumVisualizer
 {
-    private const int STACK_SIZE = 120;
+    private const int STACK_SIZE = 80;
     private const float PEAK_THRESHOLD = 1.25f;
+    private const float PEAK_THRESHULD_SPECTRUM = 1.3f;
 
     public bool DebugMode;
     public Transform Bar;
     public Transform Threshold;
     public GameObject BeatObject;
+    public int SpectrumStartIndex;
+    public int SpectrumEndIndex;
+    public Color ParticleColor;
 
     private Queue<float> averages;
     private float upperSampleAverage;
@@ -26,11 +30,11 @@ public class BeatVisualizer : MonoBehaviour, IAverageSpectrumVisualizer
         Threshold.gameObject.SetActive(DebugMode);
     }
 
-    public void VisualizeValue(float[] values)
+    public void VisualizeValue(float[] values, float spectrumAverage)
     {
         float average = 0f;
-        int numValues = 12;// values.Length;
-        for (int i = 0; i < numValues; ++i)
+        int numValues = SpectrumEndIndex - SpectrumStartIndex;
+        for (int i = SpectrumStartIndex; i < SpectrumEndIndex; ++i)
         {
             average += values[i];
         }
@@ -48,6 +52,7 @@ public class BeatVisualizer : MonoBehaviour, IAverageSpectrumVisualizer
             }
             avg /= STACK_SIZE;
             upperSampleAverage = avg * PEAK_THRESHOLD;
+            float spectrumUpperSampleAverage = spectrumAverage * PEAK_THRESHULD_SPECTRUM;
 
             Bar.localScale = new Vector3(1f, average, 1f);
             Threshold.localPosition = new Vector3(0f, upperSampleAverage, 0f);
@@ -58,7 +63,10 @@ public class BeatVisualizer : MonoBehaviour, IAverageSpectrumVisualizer
                 if (average <= avg)
                 {
                     thresholdExceeded = 0;
-                    GameObject.Instantiate(BeatObject);
+                    GameObject particleObj = GameObject.Instantiate(BeatObject);
+                    ParticleSystem.MainModule mainModule = particleObj.GetComponent<ParticleSystem>().main;
+                    Color particleColor = ParticleColor;
+                    mainModule.startColor = new ParticleSystem.MinMaxGradient(particleColor);
                 }
 
                 if (thresholdExceeded > STACK_SIZE)
@@ -66,12 +74,22 @@ public class BeatVisualizer : MonoBehaviour, IAverageSpectrumVisualizer
                     thresholdExceeded = 0;
                 }
             }
-            else if (average > upperSampleAverage)
+            else if (average > upperSampleAverage && average > spectrumUpperSampleAverage)
             {
                 thresholdExceeded = 1;
+                FillAveragesWithValue(average);
             }
 
             //Debug.Log("Average: " + average + ", Threshold: " + upperSampleAverage);
+        }
+    }
+
+    private void FillAveragesWithValue(float value)
+    {
+        averages.Clear();
+        for (int i = 0; i < STACK_SIZE; ++i)
+        {
+            averages.Enqueue(value);
         }
     }
 }

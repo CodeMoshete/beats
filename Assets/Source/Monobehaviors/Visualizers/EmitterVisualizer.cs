@@ -36,8 +36,8 @@ public class EmitterVisualizer : MonoBehaviour, IFullSpectrumVisualizer
     {
         ParticleSystem.MainModule mainModule = Particles.main;
         setScalar = Mathf.Max(setScalar, value);
-        float adjustedScalar = 
-            setScalar * (25f * (Mathf.Cos((Mathf.PI * ((float)index + (float)EngineRealtime.NUM_BARS)) / (float)EngineRealtime.NUM_BARS)) + 15f);
+        float adjustedScalar = setScalar * 25;
+            // setScalar * (25f * (Mathf.Cos((Mathf.PI * ((float)index + (float)EngineRealtime.NUM_BARS)) / (float)EngineRealtime.NUM_BARS)) + 15f);
         adjustedScalar = Mathf.Min(EngineRealtime.RADIUS - 5f, adjustedScalar);
         transform.localPosition = startPos - ((adjustedScalar) * startPosNormal);
         mainModule.startSpeedMultiplier = baseSpeed + (value * 100f);
