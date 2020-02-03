@@ -3,9 +3,11 @@ using UnityEngine;
 
 public class BeatVisualizer : MonoBehaviour, IAverageSpectrumVisualizer
 {
-    private const int STACK_SIZE = 80;
-    private const float PEAK_THRESHOLD = 1.25f;
+    private const float STACK_TIME_BEAT = 1f;
+    private const float VOLUME_MAX = 1.3f;
+    private const float STACK_TIME_VOLUME = 3f;
     private const float PEAK_THRESHULD_SPECTRUM = 1.3f;
+    private const float MAX_ALPHA = 0.323f;
 
     public bool DebugMode;
     public Transform Bar;
@@ -14,14 +16,21 @@ public class BeatVisualizer : MonoBehaviour, IAverageSpectrumVisualizer
     public int SpectrumStartIndex;
     public int SpectrumEndIndex;
     public Color ParticleColor;
+    public float PeakThreshold = 1.3f;
 
-    private Queue<float> averages;
+    private Queue<float> beatAverages;
+    private Queue<float> volumeAverages;
+    private float stackTestTimeBeatLeft;
+    private float stackTestTimeVolumeLeft;
     private float upperSampleAverage;
     private int thresholdExceeded;
 
     public BeatVisualizer()
     {
-        averages = new Queue<float>();
+        beatAverages = new Queue<float>();
+        volumeAverages = new Queue<float>();
+        stackTestTimeBeatLeft = STACK_TIME_BEAT;
+        stackTestTimeVolumeLeft = STACK_TIME_VOLUME;
     }
 
     public void Start()
@@ -39,19 +48,40 @@ public class BeatVisualizer : MonoBehaviour, IAverageSpectrumVisualizer
             average += values[i];
         }
         average /= numValues;
-        averages.Enqueue(average);
+        beatAverages.Enqueue(average);
 
-        if (averages.Count > STACK_SIZE)
+        volumeAverages.Enqueue(average);
+        stackTestTimeVolumeLeft -= Time.deltaTime;
+        float volumeAverage = 0f;
+        if (stackTestTimeVolumeLeft <= 0f)
         {
-            averages.Dequeue();
+            volumeAverages.Dequeue();
+
+            int stackSize = volumeAverages.Count;
+
+            foreach (float val in volumeAverages)
+            {
+                volumeAverage += val;
+            }
+            volumeAverage /= stackSize;
+            volumeAverage = Mathf.Min(volumeAverage, VOLUME_MAX);
+            volumeAverage = volumeAverage / VOLUME_MAX;
+        }
+
+        stackTestTimeBeatLeft -= Time.deltaTime;
+        if (stackTestTimeBeatLeft <= 0f)
+        {
+            beatAverages.Dequeue();
+
+            int stackSize = beatAverages.Count;
 
             float avg = 0f;
-            foreach (float val in averages)
+            foreach (float val in beatAverages)
             {
                 avg += val;
             }
-            avg /= STACK_SIZE;
-            upperSampleAverage = avg * PEAK_THRESHOLD;
+            avg /= stackSize;
+            upperSampleAverage = avg * PeakThreshold;
             float spectrumUpperSampleAverage = spectrumAverage * PEAK_THRESHULD_SPECTRUM;
 
             Bar.localScale = new Vector3(1f, average, 1f);
@@ -66,10 +96,11 @@ public class BeatVisualizer : MonoBehaviour, IAverageSpectrumVisualizer
                     GameObject particleObj = GameObject.Instantiate(BeatObject);
                     ParticleSystem.MainModule mainModule = particleObj.GetComponent<ParticleSystem>().main;
                     Color particleColor = ParticleColor;
+                    particleColor.a = Mathf.Lerp(0f, MAX_ALPHA, volumeAverage);
                     mainModule.startColor = new ParticleSystem.MinMaxGradient(particleColor);
                 }
 
-                if (thresholdExceeded > STACK_SIZE)
+                if (thresholdExceeded > stackSize)
                 {
                     thresholdExceeded = 0;
                 }
@@ -79,17 +110,16 @@ public class BeatVisualizer : MonoBehaviour, IAverageSpectrumVisualizer
                 thresholdExceeded = 1;
                 FillAveragesWithValue(average);
             }
-
-            //Debug.Log("Average: " + average + ", Threshold: " + upperSampleAverage);
         }
     }
 
     private void FillAveragesWithValue(float value)
     {
-        averages.Clear();
-        for (int i = 0; i < STACK_SIZE; ++i)
+        int averagesSize = beatAverages.Count;
+        beatAverages.Clear();
+        for (int i = 0; i < averagesSize; ++i)
         {
-            averages.Enqueue(value);
+            beatAverages.Enqueue(value);
         }
     }
 }
