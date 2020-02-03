@@ -4,7 +4,7 @@ using UnityEngine;
 public class BackgroundManager
 {
     private const float MAX_SCALE = 2f;
-    private const float FADE_THRESHOLD = 0.3f;
+    private const float FADE_THRESHOLD = 0.2f;
     private const float MAX_FADE_PCT = 0.7f;
 
     private float transitionTimeTotal;

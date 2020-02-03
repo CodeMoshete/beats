@@ -7,7 +7,7 @@ public class BeatVisualizer : MonoBehaviour, IAverageSpectrumVisualizer
     private const float VOLUME_MAX = 1.3f;
     private const float STACK_TIME_VOLUME = 3f;
     private const float PEAK_THRESHULD_SPECTRUM = 1.3f;
-    private const float MAX_ALPHA = 0.323f;
+    private const float MAX_ALPHA = 0.5f;
 
     public bool DebugMode;
     public Transform Bar;

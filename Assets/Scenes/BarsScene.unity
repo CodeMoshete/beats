@@ -444,7 +444,7 @@ MonoBehaviour:
   - {fileID: 1348686885}
   - {fileID: 453821462}
   - {fileID: 998438409}
-  BGTransitionTime: 60
+  BGTransitionTime: 10
   Background: {fileID: 1528901763}
   BGMaterial: {fileID: 2100000, guid: e517ac2d478142f41ae009ee0e898ab3, type: 2}
   Backgrounds:
@@ -646,11 +646,11 @@ MonoBehaviour:
   Particles: {fileID: 1264156133}
   ColorKeys:
   - OuterColor: {r: 0, g: 0.19907379, b: 1, a: 1}
-    InnerColor: {r: 0.9987322, g: 1, b: 0, a: 1}
+    InnerColor: {r: 0.9987322, g: 1, b: 0, a: 0.49803922}
   - OuterColor: {r: 0.7125349, g: 0, b: 1, a: 1}
-    InnerColor: {r: 0.38124967, g: 1, b: 0, a: 1}
+    InnerColor: {r: 0.38124967, g: 1, b: 0, a: 0.49803922}
   - OuterColor: {r: 0.6037736, g: 0, b: 0.18231605, a: 1}
-    InnerColor: {r: 0.3820755, g: 0.823104, b: 1, a: 1}
+    InnerColor: {r: 0.3820755, g: 0.823104, b: 1, a: 0.49803922}
 --- !u!4 &248070069
 Transform:
   m_ObjectHideFlags: 0
@@ -664,7 +664,7 @@ Transform:
   m_Children:
   - {fileID: 1264156134}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &277596585
 GameObject:
@@ -1202,7 +1202,7 @@ Transform:
   - {fileID: 534669905}
   - {fileID: 1404563020}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &913513883
 GameObject:
@@ -6661,7 +6661,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 1, g: 1, b: 1, a: 1}
+      maxColor: {r: 1, g: 1, b: 1, a: 0.627451}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -11214,7 +11214,7 @@ Transform:
   - {fileID: 615915774}
   - {fileID: 990910647}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1482135961
 MonoBehaviour:

@@ -8,7 +8,7 @@ public class VolumeVisualizer : MonoBehaviour, IAverageSpectrumVisualizer
     private const float SPEED_MIN = 300f;
     private const float SPEED_MAX = 800f;
     private const float SIZE_MIN = 1f;
-    private const float SIZE_MAX = 3f;
+    private const float SIZE_MAX = 2f;
     private const float RATE_MIN = 0f;
     private const float RATE_MAX = 300f;
 
