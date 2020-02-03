@@ -442,6 +442,8 @@ MonoBehaviour:
   BeatVisualizers:
   - {fileID: 193455826}
   - {fileID: 1348686885}
+  - {fileID: 453821462}
+  - {fileID: 998438409}
 --- !u!1 &140137853
 GameObject:
   m_ObjectHideFlags: 0

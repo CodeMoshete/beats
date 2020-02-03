@@ -41,16 +41,16 @@ public class BeatVisualizer : MonoBehaviour, IAverageSpectrumVisualizer
 
     public void VisualizeValue(float[] values, float spectrumAverage)
     {
-        float average = 0f;
+        float selectedSpectrumAverage = 0f;
         int numValues = SpectrumEndIndex - SpectrumStartIndex;
         for (int i = SpectrumStartIndex; i < SpectrumEndIndex; ++i)
         {
-            average += values[i];
+            selectedSpectrumAverage += values[i];
         }
-        average /= numValues;
-        beatAverages.Enqueue(average);
+        selectedSpectrumAverage /= numValues;
+        beatAverages.Enqueue(selectedSpectrumAverage);
 
-        volumeAverages.Enqueue(average);
+        volumeAverages.Enqueue(spectrumAverage);
         stackTestTimeVolumeLeft -= Time.deltaTime;
         float volumeAverage = 0f;
         if (stackTestTimeVolumeLeft <= 0f)
@@ -75,27 +75,28 @@ public class BeatVisualizer : MonoBehaviour, IAverageSpectrumVisualizer
 
             int stackSize = beatAverages.Count;
 
-            float avg = 0f;
+            float beatAverage = 0f;
             foreach (float val in beatAverages)
             {
-                avg += val;
+                beatAverage += val;
             }
-            avg /= stackSize;
-            upperSampleAverage = avg * PeakThreshold;
+            beatAverage /= stackSize;
+            upperSampleAverage = beatAverage * PeakThreshold;
             float spectrumUpperSampleAverage = spectrumAverage * PEAK_THRESHULD_SPECTRUM;
 
-            Bar.localScale = new Vector3(1f, average, 1f);
+            Bar.localScale = new Vector3(1f, selectedSpectrumAverage, 1f);
             Threshold.localPosition = new Vector3(0f, upperSampleAverage, 0f);
 
             if (thresholdExceeded > 0)
             {
                 thresholdExceeded += 1;
-                if (average <= avg)
+                if (selectedSpectrumAverage <= beatAverage)
                 {
                     thresholdExceeded = 0;
                     GameObject particleObj = GameObject.Instantiate(BeatObject);
                     ParticleSystem.MainModule mainModule = particleObj.GetComponent<ParticleSystem>().main;
                     Color particleColor = ParticleColor;
+                    Debug.Log("Beat! " + volumeAverage);
                     particleColor.a = Mathf.Lerp(0f, MAX_ALPHA, volumeAverage);
                     mainModule.startColor = new ParticleSystem.MinMaxGradient(particleColor);
                 }
@@ -105,10 +106,10 @@ public class BeatVisualizer : MonoBehaviour, IAverageSpectrumVisualizer
                     thresholdExceeded = 0;
                 }
             }
-            else if (average > upperSampleAverage && average > spectrumUpperSampleAverage)
+            else if (selectedSpectrumAverage > upperSampleAverage && selectedSpectrumAverage > spectrumUpperSampleAverage)
             {
                 thresholdExceeded = 1;
-                FillAveragesWithValue(average);
+                FillAveragesWithValue(selectedSpectrumAverage);
             }
         }
     }

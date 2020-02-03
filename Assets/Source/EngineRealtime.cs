@@ -26,8 +26,8 @@ public class EngineRealtime : MonoBehaviour
         fsVisualizers = new List<List<IFullSpectrumVisualizer>>();
         avgVisualizers = new List<IAverageSpectrumVisualizer>();
 
-        GenerateVisCircle(VisScaler);
-        //GenerateVisCircle(VisEmitter, true);
+        //GenerateVisCircle(VisScaler);
+        GenerateVisCircle(VisEmitter, true);
 
         for (int i = 0, count = BeatVisualizers.Count; i < count; ++i)
         {
