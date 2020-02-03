@@ -644,6 +644,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Particles: {fileID: 1264156133}
+  ColorKeys:
+  - OuterColor: {r: 0, g: 0.19907379, b: 1, a: 1}
+    InnerColor: {r: 0.9987322, g: 1, b: 0, a: 1}
+  - OuterColor: {r: 0.7125349, g: 0, b: 1, a: 1}
+    InnerColor: {r: 0.38124967, g: 1, b: 0, a: 1}
+  - OuterColor: {r: 0.6037736, g: 0, b: 0.18231605, a: 1}
+    InnerColor: {r: 0.3820755, g: 0.823104, b: 1, a: 1}
 --- !u!4 &248070069
 Transform:
   m_ObjectHideFlags: 0

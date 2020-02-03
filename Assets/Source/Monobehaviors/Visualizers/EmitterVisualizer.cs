@@ -1,16 +1,24 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class EmitterVisualizer : MonoBehaviour, IFullSpectrumVisualizer
 {
     private const float SCALE_DOWN_SPEED = 6f;
+    private const float COLOR_KEY_ROTATION_TIME = 10f;
 
     public ParticleSystem Particles;
+    public List<ColorRotationKey> ColorKeys;
 
     private float baseSpeed;
     private float setScalar;
     private Vector3 startPos;
     private Vector3 startPosNormal;
     private int index;
+
+    private float colorTimeLeft;
+    private int colorKeyIndex;
+    private ColorRotationKey currentColors;
+    private ColorRotationKey nextColors;
 
     public void Initialize(int index)
     {
@@ -22,6 +30,7 @@ public class EmitterVisualizer : MonoBehaviour, IFullSpectrumVisualizer
         startPos = transform.localPosition;
         startPosNormal = startPos.normalized;
         baseSpeed = Particles.main.startSpeedMultiplier;
+        SetNextColorRotation();
     }
 
     private void Update()
@@ -34,6 +43,8 @@ public class EmitterVisualizer : MonoBehaviour, IFullSpectrumVisualizer
 
     public void VisualizeValue(float value)
     {
+        colorTimeLeft -= Time.deltaTime;
+
         ParticleSystem.MainModule mainModule = Particles.main;
         setScalar = Mathf.Max(setScalar, value);
         float adjustedScalar = setScalar * 25;
@@ -44,5 +55,14 @@ public class EmitterVisualizer : MonoBehaviour, IFullSpectrumVisualizer
         float colorVal = Mathf.Pow(value, 10);
         Color particleColor = new Color(colorVal, colorVal, 1f - colorVal);
         mainModule.startColor = new ParticleSystem.MinMaxGradient(particleColor);
+    }
+
+    private void SetNextColorRotation()
+    {
+        colorTimeLeft = COLOR_KEY_ROTATION_TIME;
+        colorKeyIndex = colorKeyIndex >= ColorKeys.Count - 1 ? 0 : colorKeyIndex + 1;
+        int nextKeyIndex = colorKeyIndex >= ColorKeys.Count - 1 ? 0 : colorKeyIndex + 1;
+        currentColors = ColorKeys[colorKeyIndex];
+        nextColors = ColorKeys[nextKeyIndex];
     }
 }

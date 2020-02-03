@@ -21,6 +21,7 @@ public class BackgroundManager
         background = bg;
         backgroundTextures = bgTextures;
         bgMaterial = bgMat;
+        bgMaterial.SetTexture("_MainTex", backgroundTextures[0]);
     }
 
     public void Update(float dt)
