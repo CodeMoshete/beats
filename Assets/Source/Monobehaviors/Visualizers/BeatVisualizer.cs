@@ -96,7 +96,6 @@ public class BeatVisualizer : MonoBehaviour, IAverageSpectrumVisualizer
                     GameObject particleObj = GameObject.Instantiate(BeatObject);
                     ParticleSystem.MainModule mainModule = particleObj.GetComponent<ParticleSystem>().main;
                     Color particleColor = ParticleColor;
-                    Debug.Log("Beat! " + volumeAverage);
                     particleColor.a = Mathf.Lerp(0f, MAX_ALPHA, volumeAverage);
                     mainModule.startColor = new ParticleSystem.MinMaxGradient(particleColor);
                 }

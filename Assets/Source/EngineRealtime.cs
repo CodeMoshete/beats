@@ -14,17 +14,25 @@ public class EngineRealtime : MonoBehaviour
     public Transform Rotater;
     public Transform VisRotater;
     public List<GameObject> BeatVisualizers;
+    public float BGTransitionTime = 10f;
+    public Transform Background;
+    public Material BGMaterial;
+    public List<Texture2D> Backgrounds;
 
     private RealtimeAudio audioSource;
     private List<List<IFullSpectrumVisualizer>> fsVisualizers;
     private List<IAverageSpectrumVisualizer> avgVisualizers;
     private float[] currentSpectrum;
 
+    private BackgroundManager bgManager;
+
     private void Awake()
     {
         currentSpectrum = new float[NUM_BARS];
         fsVisualizers = new List<List<IFullSpectrumVisualizer>>();
         avgVisualizers = new List<IAverageSpectrumVisualizer>();
+
+        bgManager = new BackgroundManager(Backgrounds, Background, BGMaterial, BGTransitionTime);
 
         //GenerateVisCircle(VisScaler);
         GenerateVisCircle(VisEmitter, true);
@@ -66,8 +74,9 @@ public class EngineRealtime : MonoBehaviour
 
     public void Update()
     {
+        float dt = Time.deltaTime;
         //Rotater.Rotate(new Vector3(0f, RotationRate * Time.deltaTime, 0f));
-        VisRotater.Rotate(new Vector3(0f, RotationRate * Time.deltaTime, 0f));
+        VisRotater.Rotate(new Vector3(0f, RotationRate * dt, 0f));
         for (int j = 0, count = fsVisualizers.Count; j < count; ++j)
         {
             for (int i = 0; i < NUM_BARS; ++i)
@@ -88,6 +97,8 @@ public class EngineRealtime : MonoBehaviour
         {
             avgVisualizers[i].VisualizeValue(currentSpectrum, spectrumAverage);
         }
+
+        bgManager.Update(dt);
     }
 
     public void OnApplicationQuit()
