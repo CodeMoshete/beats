@@ -444,6 +444,7 @@ MonoBehaviour:
   - {fileID: 1348686885}
   - {fileID: 453821462}
   - {fileID: 998438409}
+  - {fileID: 1528901762}
   BGTransitionTime: 10
   Background: {fileID: 1528901763}
   BGMaterial: {fileID: 2100000, guid: e517ac2d478142f41ae009ee0e898ab3, type: 2}
@@ -11240,6 +11241,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1528901763}
+  - component: {fileID: 1528901764}
   m_Layer: 0
   m_Name: BackgroundContainer
   m_TagString: Untagged
@@ -11262,6 +11264,34 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1528901764
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1528901762}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 446c5fe1794b7c9418e8bd5d2c4ef939, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  backgroundTextures:
+  - {fileID: 2800000, guid: 466349e1f9ad64543baff3ec790640bc, type: 3}
+  - {fileID: 2800000, guid: cbc3273c7a232d84e948adc57ad024ee, type: 3}
+  - {fileID: 2800000, guid: 2d5375a5fd37cd34b8bb96e2a0c86de7, type: 3}
+  - {fileID: 2800000, guid: 02efac35073d6dc43a4cb35f1eddc3c4, type: 3}
+  - {fileID: 2800000, guid: 9c67edba9a0753a4f8b35f680a96a0d5, type: 3}
+  - {fileID: 2800000, guid: f444fcca86598bb46a2f9cc212088dee, type: 3}
+  - {fileID: 2800000, guid: d317811504da7b844b1ced1afc23d6eb, type: 3}
+  - {fileID: 2800000, guid: 9bbff4416f29c8b40868cb1cce26559b, type: 3}
+  - {fileID: 2800000, guid: eb389e3dcc27d2947be4b701ecfa2488, type: 3}
+  - {fileID: 2800000, guid: 36cb5ea09c09f10489c44ad404847381, type: 3}
+  - {fileID: 2800000, guid: 12253d9bef79d394299c15557b4b2fa2, type: 3}
+  - {fileID: 2800000, guid: b3dc35d9982724b489835e76d6e19669, type: 3}
+  transitionTime: 10
+  background: {fileID: 1528901763}
+  bgRenderer: {fileID: 277596587}
 --- !u!1 &1601331994
 GameObject:
   m_ObjectHideFlags: 0

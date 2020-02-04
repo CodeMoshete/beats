@@ -4,5 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/BarsScene.unity
+    guid: 39a4edfd5d7abb64f8b8295b97c45987
   m_configObjects: {}

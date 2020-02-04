@@ -24,7 +24,7 @@ public class EngineRealtime : MonoBehaviour
     private List<IAverageSpectrumVisualizer> avgVisualizers;
     private float[] currentSpectrum;
 
-    private BackgroundManager bgManager;
+    //private BackgroundManager bgManager;
 
     private void Awake()
     {
@@ -32,7 +32,7 @@ public class EngineRealtime : MonoBehaviour
         fsVisualizers = new List<List<IFullSpectrumVisualizer>>();
         avgVisualizers = new List<IAverageSpectrumVisualizer>();
 
-        bgManager = new BackgroundManager(Backgrounds, Background, BGMaterial, BGTransitionTime);
+        //bgManager = new BackgroundManager(Backgrounds, Background, BGMaterial, BGTransitionTime);
 
         //GenerateVisCircle(VisScaler);
         GenerateVisCircle(VisEmitter, true);
@@ -98,7 +98,7 @@ public class EngineRealtime : MonoBehaviour
             avgVisualizers[i].VisualizeValue(currentSpectrum, spectrumAverage);
         }
 
-        bgManager.Update(dt);
+        //bgManager.Update(dt);
     }
 
     public void OnApplicationQuit()
