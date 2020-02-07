@@ -69,7 +69,7 @@ public class EngineRealtime : MonoBehaviour
             visualizerSet.Add(visualizer);
         }
         fsVisualizers.Add(visualizerSet);
-        original.gameObject.SetActive(false);
+        original.gameObject.SetActive(false); 
     }
 
     public void Update()

@@ -6,6 +6,9 @@ public class EmitterVisualizer : MonoBehaviour, IFullSpectrumVisualizer
     private const float SCALE_DOWN_SPEED = 6f;
     private const float COLOR_KEY_ROTATION_TIME = 10f;
     private const float COLOR_VALUE_MAX = 1.3f;
+    private const float DEAD_ZONE = 0.1f;
+    private const float DEAD_ZONE_FADE_IN_TIME = 1f;
+    private const float DEAD_ZONE_FADE_OUT_TIME = 3f;
 
     public ParticleSystem Particles;
     public List<ColorRotationKey> ColorKeys;
@@ -20,6 +23,7 @@ public class EmitterVisualizer : MonoBehaviour, IFullSpectrumVisualizer
     private int colorKeyIndex;
     private ColorRotationKey currentColors;
     private ColorRotationKey nextColors;
+    private float deadZonePct;
 
     public void Initialize(int index)
     {
@@ -44,7 +48,8 @@ public class EmitterVisualizer : MonoBehaviour, IFullSpectrumVisualizer
 
     public void VisualizeValue(float value)
     {
-        colorTimeLeft -= Time.deltaTime;
+        float dt = Time.deltaTime;
+        colorTimeLeft -= dt;
         if (colorTimeLeft <= 0f)
         {
             SetNextColorRotation();
@@ -55,6 +60,18 @@ public class EmitterVisualizer : MonoBehaviour, IFullSpectrumVisualizer
         float colorValueModifier = Mathf.Min(value, COLOR_VALUE_MAX) / COLOR_VALUE_MAX;
         Color finalColor = Color.Lerp(currentOuterColor, currentInnerColor, colorValueModifier);
 
+        //float deadZonePct = Mathf.Min(1f, value / DEAD_ZONE);
+        if (value < DEAD_ZONE)
+        {
+            deadZonePct = Mathf.Clamp(deadZonePct - (dt / DEAD_ZONE_FADE_OUT_TIME), 0f, 1f);
+        }
+        else
+        {
+            deadZonePct = Mathf.Clamp(deadZonePct + (dt / DEAD_ZONE_FADE_IN_TIME), 0f, 1f);
+        }
+
+        finalColor.a *= deadZonePct;
+
         ParticleSystem.MainModule mainModule = Particles.main;
         setScalar = Mathf.Max(setScalar, value);
         float adjustedScalar = setScalar * 25;
@@ -62,9 +79,6 @@ public class EmitterVisualizer : MonoBehaviour, IFullSpectrumVisualizer
         adjustedScalar = Mathf.Min(EngineRealtime.RADIUS - 20f, adjustedScalar);
         transform.localPosition = startPos - ((adjustedScalar) * startPosNormal);
         mainModule.startSpeedMultiplier = baseSpeed + (value * 100f);
-        //float colorVal = Mathf.Pow(value, 10);
-        //Color particleColor = new Color(colorVal, colorVal, 1f - colorVal);
-        //mainModule.startColor = new ParticleSystem.MinMaxGradient(particleColor);
         mainModule.startColor = new ParticleSystem.MinMaxGradient(finalColor);
     }
 
