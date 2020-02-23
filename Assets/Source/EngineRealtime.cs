@@ -17,22 +17,17 @@ public class EngineRealtime : MonoBehaviour
     public float BGTransitionTime = 10f;
     public Transform Background;
     public Material BGMaterial;
-    public List<Texture2D> Backgrounds;
 
     private RealtimeAudio audioSource;
     private List<List<IFullSpectrumVisualizer>> fsVisualizers;
     private List<IAverageSpectrumVisualizer> avgVisualizers;
     private float[] currentSpectrum;
 
-    //private BackgroundManager bgManager;
-
     private void Awake()
     {
         currentSpectrum = new float[NUM_BARS];
         fsVisualizers = new List<List<IFullSpectrumVisualizer>>();
         avgVisualizers = new List<IAverageSpectrumVisualizer>();
-
-        //bgManager = new BackgroundManager(Backgrounds, Background, BGMaterial, BGTransitionTime);
 
         //GenerateVisCircle(VisScaler);
         GenerateVisCircle(VisEmitter, true);
@@ -97,8 +92,6 @@ public class EngineRealtime : MonoBehaviour
         {
             avgVisualizers[i].VisualizeValue(currentSpectrum, spectrumAverage);
         }
-
-        //bgManager.Update(dt);
     }
 
     public void OnApplicationQuit()

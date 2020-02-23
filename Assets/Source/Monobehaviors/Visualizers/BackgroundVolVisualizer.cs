@@ -1,5 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 public class BackgroundVolVisualizer : MonoBehaviour, IAverageSpectrumVisualizer
@@ -12,6 +12,7 @@ public class BackgroundVolVisualizer : MonoBehaviour, IAverageSpectrumVisualizer
     public float transitionTime = 10f;
     public Transform background;
     public Renderer bgRenderer;
+    public GameObject ErrorCanvas;
 
     private float transitionTimeTotal;
     private float transitionTimeCurrent;
@@ -23,6 +24,36 @@ public class BackgroundVolVisualizer : MonoBehaviour, IAverageSpectrumVisualizer
         transitionTimeTotal = transitionTime;
         transitionTimeCurrent = transitionTime;
         bgMaterial = bgRenderer.material;
+
+        backgroundTextures = new List<Texture2D>();
+        string imagesPath = Path.GetFullPath("./images");
+        if (Directory.Exists(imagesPath))
+        {
+            string[] files = Directory.GetFiles(imagesPath);
+            for (int i = 0, count = files.Length; i < count; ++i)
+            {
+                byte[] imageBytes = File.ReadAllBytes(files[i]);
+                Texture2D tex = new Texture2D(1920, 1080);
+                bool didLoad = ImageConversion.LoadImage(tex, imageBytes);
+                if (didLoad)
+                {
+                    backgroundTextures.Add(tex);
+                }
+            }
+
+            if (backgroundTextures.Count > 0)
+            {
+                bgMaterial.SetTexture("_MainTex", backgroundTextures[bgIndex]);
+            }
+            else
+            {
+                ErrorCanvas.SetActive(true);
+            }
+        }
+        else
+        {
+            ErrorCanvas.SetActive(true);
+        }
     }
 
     public void VisualizeValue(float[] values, float spectrumAverage)
